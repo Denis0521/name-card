@@ -131,13 +131,20 @@
             display: none;
             margin-top: 15px;
             padding: 12px 15px;
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            border: 1px solid #a5d6a7;
             border-radius: 12px;
             font-size: 14px;
             text-align: center;
             line-height: 1.5;
+        }
+        .toast-success {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+        }
+        .toast-error {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
         }
         @media (max-width: 600px) {
             .container {
@@ -167,8 +174,9 @@
                 <option value="1000073984.png">🏕️ 深綠色</option>
                 <option value="1784874155351.png">🏡 童話小鎮 A</option>
                 <option value="1784874240076.png">🚀 夢幻太空 A</option>
-                <option value="1784876186703.png">🏡 童話小鎮 B</option>
-                <option value="1784875917011.png">🚀 夢幻太空 B</option>
+                <!-- 注意：此處已修正為與您上傳的檔案名稱一致 (帶有 _2) -->
+                <option value="1784876186703_2.png">🏡 童話小鎮 B</option>
+                <option value="1784875917011_2.png">🚀 夢幻太空 B</option>
             </select>
         </div>
         <div class="input-box span-2">
@@ -226,9 +234,7 @@
                         const installingWorker = reg.installing;
                         installingWorker.onstatechange = () => {
                             if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                const toast = document.getElementById('toastMsg');
-                                toast.innerHTML = `⚠️ <strong>發現新版本！</strong><br>已更新主題資源，請重新整理頁面。`;
-                                toast.style.display = 'block';
+                                showToast(`⚠️ <strong>發現新版本！</strong><br>已更新主題資源，請重新整理頁面。`, 'error');
                             }
                         };
                     };
@@ -243,11 +249,29 @@
     const baseImg = new Image();
     let userImg = null;
 
+    function showToast(msg, type = 'success') {
+        const toast = document.getElementById('toastMsg');
+        toast.innerHTML = msg;
+        toast.className = `toast-msg toast-${type}`;
+        toast.style.display = 'block';
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('toastMsg');
+        toast.style.display = 'none';
+    }
+
     function loadBaseImage(src) {
         baseImg.onload = () => {
             canvas.width = baseImg.width;
             canvas.height = baseImg.height;
+            hideToast();
             draw();
+        };
+        // 新增錯誤捕獲：當底圖載入失敗時給予明確提示
+        baseImg.onerror = () => {
+            console.error('無法載入底圖：', src);
+            showToast(`❌ <strong>底圖載入失敗！</strong><br>找不到檔案：<code>${src}</code><br>請確認專案資料夾內是否有該圖片。`, 'error');
         };
         baseImg.src = src;
     }
@@ -259,13 +283,13 @@
         loadBaseImage(e.target.value);
     });
 
-    // Auto-format input to have a space between characters
+    // 文字輸入自動加空格處理
     const textInputs = ['classInput', 'nameInput', 'seatInput'];
     textInputs.forEach(id => {
         const inputEl = document.getElementById(id);
         inputEl.addEventListener('input', function(e) {
-            let val = this.value.replace(/\s+/g, ''); // Remove existing spaces
-            let spacedVal = val.split('').join(' '); // Add space between each character
+            let val = this.value.replace(/\s+/g, ''); 
+            let spacedVal = val.split('').join(' '); 
             if (this.value !== spacedVal) {
                 this.value = spacedVal;
             }
@@ -395,14 +419,10 @@
         link.click();
         document.body.removeChild(link);
 
-        // 顯示儲存成功提示與儲存位置
-        const toast = document.getElementById('toastMsg');
-        toast.innerHTML = `✅ <strong>儲存成功！</strong><br>📁 檔名：<code>${fileName}</code><br>📍 儲存位置：瀏覽器「預設下載資料夾」或手機相簿/檔案管理員。`;
-        toast.style.display = 'block';
+        showToast(`✅ <strong>儲存成功！</strong><br>📁 檔名：<code>${fileName}</code><br>📍 儲存位置：瀏覽器「預設下載資料夾」或手機相簿/檔案管理員。`, 'success');
 
-        // 6秒後自動隱藏
         setTimeout(() => {
-            toast.style.display = 'none';
+            hideToast();
         }, 6000);
     });
 </script>
