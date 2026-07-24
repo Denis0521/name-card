@@ -1,5 +1,5 @@
-// 1. 將版本號改為 v2，讓瀏覽器知道有新版本
-const CACHE_NAME = 'kindergarten-card-v2';
+// 1. 將版本號升級（例如從 v2 改成 v3）
+const CACHE_NAME = 'kindergarten-card-v3';
 
 const urlsToCache = [
   './',
@@ -22,7 +22,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  // 自動刪除舊版的快取 (v1)
+  // 自動刪除舊版本的快取
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(

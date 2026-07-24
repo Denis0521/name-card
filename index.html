@@ -126,6 +126,19 @@
         .btn-download:active {
             transform: scale(0.98);
         }
+        /* 提示訊息樣式 */
+        .toast-msg {
+            display: none;
+            margin-top: 15px;
+            padding: 12px 15px;
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #a5d6a7;
+            border-radius: 12px;
+            font-size: 14px;
+            text-align: center;
+            line-height: 1.5;
+        }
         @media (max-width: 600px) {
             .container {
                 padding: 15px;
@@ -194,6 +207,9 @@
     </div>
 
     <button class="btn-download" id="downloadBtn">📥 儲存圖片到手機 (長10cm)</button>
+    
+    <!-- 提示訊息 -->
+    <div class="toast-msg" id="toastMsg"></div>
 </div>
 
 <script>
@@ -331,6 +347,7 @@
     document.getElementById('downloadBtn').addEventListener('click', () => {
         const rawName = document.getElementById('nameInput').value.trim();
         const studentName = rawName ? rawName.replace(/\s+/g, '') : '學生';
+        const fileName = `${studentName}_名片_10cm.jpg`;
 
         const targetWidth = Math.round(10 * 118.11);
         const aspectRatio = canvas.height / canvas.width;
@@ -348,11 +365,21 @@
         const dataURL = exportCanvas.toDataURL('image/jpeg', 0.95);
         const link = document.createElement('a');
         
-        link.download = `${studentName}_名片_10cm.jpg`; 
+        link.download = fileName; 
         link.href = dataURL;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
+
+        // 顯示儲存成功提示與儲存位置
+        const toast = document.getElementById('toastMsg');
+        toast.innerHTML = `✅ <strong>儲存成功！</strong><br>📁 檔名：<code>${fileName}</code><br>📍 儲存位置：瀏覽器「預設下載資料夾」或手機相簿/檔案管理員。`;
+        toast.style.display = 'block';
+
+        // 6秒後自動隱藏
+        setTimeout(() => {
+            toast.style.display = 'none';
+        }, 6000);
     });
 </script>
 
