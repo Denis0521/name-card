@@ -1,4 +1,4 @@
-// 請將原本的 kindergarten-card-v1 改成 v2
+// 1. 將版本號改為 v2，讓瀏覽器知道有新版本
 const CACHE_NAME = 'kindergarten-card-v2';
 
 const urlsToCache = [
@@ -13,7 +13,7 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
-  // 強制跳過等待，讓新的 Service Worker 立即生效
+  // 強制讓新的 Service Worker 立即跳過等待
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -22,7 +22,7 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  // 清除舊版本的快取 (v1)
+  // 自動刪除舊版的快取 (v1)
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(

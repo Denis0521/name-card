@@ -161,15 +161,15 @@
         
         <div class="input-box">
             <label>班級</label>
-            <input type="text" id="classInput" placeholder="請輸入班級" value="中 班">
+            <input type="text" id="classInput" placeholder="請輸入班級" value="">
         </div>
         <div class="input-box">
             <label>姓名</label>
-            <input type="text" id="nameInput" placeholder="請輸入姓名" value="黃亮齊">
+            <input type="text" id="nameInput" placeholder="請輸入姓名" value="">
         </div>
         <div class="input-box">
             <label>座號</label>
-            <input type="text" id="seatInput" placeholder="請輸入座號" value="2 號">
+            <input type="text" id="seatInput" placeholder="請輸入座號" value="">
         </div>
         
         <div class="photo-controls">
@@ -216,8 +216,22 @@
         baseImg.src = e.target.value;
     });
 
-    const inputs = ['classInput', 'nameInput', 'seatInput', 'scale', 'xOffset', 'yOffset'];
-    inputs.forEach(id => {
+    // Auto-format input to have a space between characters
+    const textInputs = ['classInput', 'nameInput', 'seatInput'];
+    textInputs.forEach(id => {
+        const inputEl = document.getElementById(id);
+        inputEl.addEventListener('input', function(e) {
+            let val = this.value.replace(/\s+/g, ''); // Remove existing spaces
+            let spacedVal = val.split('').join(' '); // Add space between each character
+            if (this.value !== spacedVal) {
+                this.value = spacedVal;
+            }
+            draw();
+        });
+    });
+
+    const otherInputs = ['scale', 'xOffset', 'yOffset'];
+    otherInputs.forEach(id => {
         document.getElementById(id).addEventListener('input', draw);
     });
 
@@ -315,7 +329,8 @@
     }
 
     document.getElementById('downloadBtn').addEventListener('click', () => {
-        const studentName = document.getElementById('nameInput').value.trim() || '學生';
+        const rawName = document.getElementById('nameInput').value.trim();
+        const studentName = rawName ? rawName.replace(/\s+/g, '') : '學生';
 
         const targetWidth = Math.round(10 * 118.11);
         const aspectRatio = canvas.height / canvas.width;
