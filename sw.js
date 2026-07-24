@@ -1,5 +1,5 @@
-// 將版本號升級至 v5 以包含新增的童話小鎮與夢幻太空主題圖片
-const CACHE_NAME = 'kindergarten-card-v5';
+// 將版本號升級至 v6 以包含新增的童話小鎮與夢幻太空主題圖片
+const CACHE_NAME = 'kindergarten-card-v6';
 
 const urlsToCache = [
   './',

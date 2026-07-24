@@ -167,6 +167,9 @@
                 <option value="1000073984.png">🏕️ 深綠色</option>
                 <option value="1784874155351.png">🏡 童話小鎮</option>
                 <option value="1784874240076.png">🚀 夢幻太空</option>
+                <!-- 新增主題 -->
+                <option value="1784876186703.png">🏡 童話小鎮 (New)</option>
+                <option value="1784875917011.png">🚀 夢幻太空 (New)</option>
             </select>
         </div>
         <div class="input-box span-2">
@@ -215,10 +218,25 @@
 </div>
 
 <script>
+    // 註冊 Service Worker，並處理版本更新
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
-                .then(reg => console.log('SW Registered'))
+                .then(reg => {
+                    console.log('SW Registered', reg);
+                    // 當有新的 SW 版本時，提示用戶刷新
+                    reg.onupdatefound = () => {
+                        const installingWorker = reg.installing;
+                        installingWorker.onstatechange = () => {
+                            if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                // 顯示提示訊息
+                                const toast = document.getElementById('toastMsg');
+                                toast.innerHTML = `⚠️ <strong>發現新版本！</strong><br>正在套用新的主題與修正。請重新整理頁面以啟用。`;
+                                toast.style.display = 'block';
+                            }
+                        };
+                    };
+                })
                 .catch(err => console.log('SW Reg error: ', err));
         });
     }
@@ -235,6 +253,8 @@
             canvas.height = baseImg.height;
             draw();
         };
+        // 為了確保從緩存或網絡加載，添加 crossorigin 屬性 (如果是外部資源)
+        baseImg.crossOrigin = "Anonymous"; 
         baseImg.src = src;
     }
 
@@ -395,3 +415,55 @@
 
 </body>
 </html>
+// --- SW_START ---
+// 將版本號升級至 v6 以包含新增的童話小鎮與夢幻太空主題圖片
+const CACHE_NAME = 'kindergarten-card-v6';
+
+const urlsToCache = [
+  './',
+  './index.html',
+  './manifest.json',
+  './1000073981.png',
+  './1000073983.png',
+  './1000073984.png',
+  './1784874155351.png',
+  './1784874240076.png',
+  // 新增主題圖片
+  './1784876186703.png',
+  './1784875917011.png',
+  './icon-192.png',
+  './icon-512.png'
+];
+
+self.addEventListener('install', event => {
+  self.skipWaiting(); // 強制跳過等待，立即啟用新版本
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('activate', event => {
+  // 清理舊緩存
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cache => {
+          if (cache !== CACHE_NAME) {
+            console.log('SW: Cleared old cache:', cache);
+            return caches.delete(cache);
+          }
+        })
+      );
+    })
+  );
+  // 讓新版本的 SW 立即控制所有頁面
+  return self.clients.claim();
+});
+
+self.addEventListener('fetch', event => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(response => response || fetch(event.request))
+  );
+});
