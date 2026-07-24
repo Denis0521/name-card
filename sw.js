@@ -1,5 +1,5 @@
-// 將版本號升級至 v4 以更新圖片快取
-const CACHE_NAME = 'kindergarten-card-v4';
+// 將版本號升級至 v5 以包含新增的童話小鎮與夢幻太空主題圖片
+const CACHE_NAME = 'kindergarten-card-v5';
 
 const urlsToCache = [
   './',
@@ -8,6 +8,8 @@ const urlsToCache = [
   './1000073981.png',
   './1000073983.png',
   './1000073984.png',
+  './1784874155351.png',
+  './1784874240076.png',
   './icon-192.png',
   './icon-512.png'
 ];
