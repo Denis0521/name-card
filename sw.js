@@ -1,19 +1,18 @@
-// 1. 將版本號升級（例如從 v2 改成 v3）
-const CACHE_NAME = 'kindergarten-card-v3';
+// 將版本號升級至 v4 以更新圖片快取
+const CACHE_NAME = 'kindergarten-card-v4';
 
 const urlsToCache = [
   './',
   './index.html',
   './manifest.json',
-  './1000073981.jpg',
-  './1000073983.jpg',
-  './1000073984.jpg',
+  './1000073981.png',
+  './1000073983.png',
+  './1000073984.png',
   './icon-192.png',
   './icon-512.png'
 ];
 
 self.addEventListener('install', event => {
-  // 強制讓新的 Service Worker 立即跳過等待
   self.skipWaiting();
   event.waitUntil(
     caches.open(CACHE_NAME)
@@ -22,7 +21,6 @@ self.addEventListener('install', event => {
 });
 
 self.addEventListener('activate', event => {
-  // 自動刪除舊版本的快取
   event.waitUntil(
     caches.keys().then(cacheNames => {
       return Promise.all(

@@ -162,9 +162,9 @@
         <div class="input-box">
             <label>🖼️ 底圖風格</label>
             <select id="bgSelect">
-                <option value="1000073981.jpg">🌞 陽光黃</option>
-                <option value="1000073983.jpg">🌲 綠森林</option>
-                <option value="1000073984.jpg">🏕️ 深綠色</option>
+                <option value="1000073981.png">🌞 陽光黃</option>
+                <option value="1000073983.png">🌲 綠森林</option>
+                <option value="1000073984.png">🏕️ 深綠色</option>
             </select>
         </div>
         <div class="input-box span-2">
@@ -225,11 +225,22 @@
     const ctx = canvas.getContext('2d');
     
     const baseImg = new Image();
-    baseImg.src = document.getElementById('bgSelect').value; 
     let userImg = null;
 
+    function loadBaseImage(src) {
+        baseImg.onload = () => {
+            canvas.width = baseImg.width;
+            canvas.height = baseImg.height;
+            draw();
+        };
+        baseImg.src = src;
+    }
+
+    // 初始化載入選擇的底圖
+    loadBaseImage(document.getElementById('bgSelect').value);
+
     document.getElementById('bgSelect').addEventListener('change', function(e) {
-        baseImg.src = e.target.value;
+        loadBaseImage(e.target.value);
     });
 
     // Auto-format input to have a space between characters
@@ -264,12 +275,6 @@
         }
     });
 
-    baseImg.onload = () => {
-        canvas.width = baseImg.width;
-        canvas.height = baseImg.height;
-        draw();
-    };
-
     function roundedRectPath(ctx, x, y, width, height, radius) {
         ctx.beginPath();
         ctx.moveTo(x + radius, y);
@@ -285,12 +290,15 @@
     }
 
     function draw() {
-        if (!baseImg.complete) return;
+        if (!baseImg.complete || baseImg.width === 0) return;
 
         const w = canvas.width;
         const h = canvas.height;
 
         ctx.clearRect(0, 0, w, h);
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+        
         ctx.drawImage(baseImg, 0, 0, w, h);
 
         if (userImg) {
@@ -347,7 +355,7 @@
     document.getElementById('downloadBtn').addEventListener('click', () => {
         const rawName = document.getElementById('nameInput').value.trim();
         const studentName = rawName ? rawName.replace(/\s+/g, '') : '學生';
-        const fileName = `${studentName}_名片_10cm.jpg`;
+        const fileName = `${studentName}_名片_10cm.png`;
 
         const targetWidth = Math.round(10 * 118.11);
         const aspectRatio = canvas.height / canvas.width;
@@ -362,7 +370,7 @@
         exportCtx.imageSmoothingQuality = 'high';
         exportCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
-        const dataURL = exportCanvas.toDataURL('image/jpeg', 0.95);
+        const dataURL = exportCanvas.toDataURL('image/png');
         const link = document.createElement('a');
         
         link.download = fileName; 
