@@ -165,11 +165,10 @@
                 <option value="1000073981.png">🌞 陽光黃</option>
                 <option value="1000073983.png">🌲 綠森林</option>
                 <option value="1000073984.png">🏕️ 深綠色</option>
-                <option value="1784874155351.png">🏡 童話小鎮</option>
-                <option value="1784874240076.png">🚀 夢幻太空</option>
-                <!-- 新增主題 -->
-                <option value="1784876186703.png">🏡 童話小鎮 (New)</option>
-                <option value="1784875917011.png">🚀 夢幻太空 (New)</option>
+                <option value="1784874155351.png">🏡 童話小鎮 A</option>
+                <option value="1784874240076.png">🚀 夢幻太空 A</option>
+                <option value="1784876186703.png">🏡 童話小鎮 B</option>
+                <option value="1784875917011.png">🚀 夢幻太空 B</option>
             </select>
         </div>
         <div class="input-box span-2">
@@ -218,20 +217,17 @@
 </div>
 
 <script>
-    // 註冊 Service Worker，並處理版本更新
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('./sw.js')
                 .then(reg => {
                     console.log('SW Registered', reg);
-                    // 當有新的 SW 版本時，提示用戶刷新
                     reg.onupdatefound = () => {
                         const installingWorker = reg.installing;
                         installingWorker.onstatechange = () => {
                             if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                // 顯示提示訊息
                                 const toast = document.getElementById('toastMsg');
-                                toast.innerHTML = `⚠️ <strong>發現新版本！</strong><br>正在套用新的主題與修正。請重新整理頁面以啟用。`;
+                                toast.innerHTML = `⚠️ <strong>發現新版本！</strong><br>已更新主題資源，請重新整理頁面。`;
                                 toast.style.display = 'block';
                             }
                         };
@@ -253,8 +249,6 @@
             canvas.height = baseImg.height;
             draw();
         };
-        // 為了確保從緩存或網絡加載，添加 crossorigin 屬性 (如果是外部資源)
-        baseImg.crossOrigin = "Anonymous"; 
         baseImg.src = src;
     }
 
