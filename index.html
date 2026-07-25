@@ -110,6 +110,11 @@
             height: auto;
             display: block;
         }
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
         .btn-download {
             background-color: #ff8a65;
             color: white;
@@ -122,6 +127,10 @@
             font-weight: bold;
             box-shadow: 0 4px 12px rgba(255, 138, 101, 0.3);
             transition: all 0.2s;
+        }
+        .btn-download.btn-a4 {
+            background-color: #4caf50;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
         }
         .btn-download:active {
             transform: scale(0.98);
@@ -174,7 +183,6 @@
                 <option value="1000073984.png">🏕️ 深綠色</option>
                 <option value="1784874155351.png">🏡 童話小鎮 A</option>
                 <option value="1784874240076.png">🚀 夢幻太空 A</option>
-                <!-- 注意：此處已修正為與您上傳的檔案名稱一致 (帶有 _2) -->
                 <option value="1784876186703_2.png">🏡 童話小鎮 B</option>
                 <option value="1784875917011_2.png">🚀 夢幻太空 B</option>
             </select>
@@ -218,7 +226,10 @@
         <canvas id="myCanvas"></canvas>
     </div>
 
-    <button class="btn-download" id="downloadBtn">📥 儲存圖片到手機 (長10cm)</button>
+    <div class="button-group">
+        <button class="btn-download" id="downloadBtn">📥 儲存單張名片 (長10cm)</button>
+        <button class="btn-download btn-a4" id="downloadA4Btn">🖨️ 輸出 A4 列印檔 (6張張/頁)</button>
+    </div>
     
     <!-- 提示訊息 -->
     <div class="toast-msg" id="toastMsg"></div>
@@ -268,7 +279,6 @@
             hideToast();
             draw();
         };
-        // 新增錯誤捕獲：當底圖載入失敗時給予明確提示
         baseImg.onerror = () => {
             console.error('無法載入底圖：', src);
             showToast(`❌ <strong>底圖載入失敗！</strong><br>找不到檔案：<code>${src}</code><br>請確認專案資料夾內是否有該圖片。`, 'error');
@@ -276,14 +286,12 @@
         baseImg.src = src;
     }
 
-    // 初始化載入選擇的底圖
     loadBaseImage(document.getElementById('bgSelect').value);
 
     document.getElementById('bgSelect').addEventListener('change', function(e) {
         loadBaseImage(e.target.value);
     });
 
-    // 文字輸入自動加空格處理
     const textInputs = ['classInput', 'nameInput', 'seatInput'];
     textInputs.forEach(id => {
         const inputEl = document.getElementById(id);
@@ -392,6 +400,7 @@
         ctx.fillText(seatText, textX, h * 0.73);
     }
 
+    // 單張下載功能
     document.getElementById('downloadBtn').addEventListener('click', () => {
         const rawName = document.getElementById('nameInput').value.trim();
         const studentName = rawName ? rawName.replace(/\s+/g, '') : '學生';
@@ -410,21 +419,77 @@
         exportCtx.imageSmoothingQuality = 'high';
         exportCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight);
 
-        const dataURL = exportCanvas.toDataURL('image/png');
+        triggerDownload(exportCanvas.toDataURL('image/png'), fileName);
+    });
+
+    // 新增：A4 6張排版下載功能
+    document.getElementById('downloadA4Btn').addEventListener('click', () => {
+        const rawName = document.getElementById('nameInput').value.trim();
+        const studentName = rawName ? rawName.replace(/\s+/g, '') : '學生';
+        const fileName = `${studentName}_名片_A4併印6張.png`;
+
+        // 300 DPI 下的 A4 尺寸 (像素)
+        const a4Width = 2480;  // 210mm
+        const a4Height = 3508; // 297mm
+
+        const a4Canvas = document.createElement('canvas');
+        a4Canvas.width = a4Width;
+        a4Canvas.height = a4Height;
+        const a4Ctx = a4Canvas.getContext('2d');
+
+        // 白底
+        a4Ctx.fillStyle = '#ffffff';
+        a4Ctx.fillRect(0, 0, a4Width, a4Height);
+        a4Ctx.imageSmoothingEnabled = true;
+        a4Ctx.imageSmoothingQuality = 'high';
+
+        // 單張名片尺寸：寬 90mm (約 1063px)，高以比例繪製
+        const cardWidth = Math.round(a4Width * 0.42); 
+        const cardHeight = Math.round(cardWidth * (canvas.height / canvas.width));
+
+        const cols = 2;
+        const rows = 3;
+
+        // 計算邊距與間距以均勻排列 6 張名片
+        const totalXGap = a4Width - (cols * cardWidth);
+        const gapX = totalXGap / (cols + 1);
+
+        const totalYGap = a4Height - (rows * cardHeight);
+        const gapY = totalYGap / (rows + 1);
+
+        for (let r = 0; r < rows; r++) {
+            for (let c = 0; c < cols; c++) {
+                const x = gapX + c * (cardWidth + gapX);
+                const y = gapY + r * (cardHeight + gapY);
+
+                // 畫名片本體
+                a4Ctx.drawImage(canvas, x, y, cardWidth, cardHeight);
+
+                // 畫輕微剪裁外框線
+                a4Ctx.strokeStyle = '#cccccc';
+                a4Ctx.lineWidth = 2;
+                a4Ctx.strokeRect(x, y, cardWidth, cardHeight);
+            }
+        }
+
+        triggerDownload(a4Canvas.toDataURL('image/png'), fileName);
+    });
+
+    // 觸發下載通用函式
+    function triggerDownload(dataURL, fileName) {
         const link = document.createElement('a');
-        
-        link.download = fileName; 
+        link.download = fileName;
         link.href = dataURL;
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
 
-        showToast(`✅ <strong>儲存成功！</strong><br>📁 檔名：<code>${fileName}</code><br>📍 儲存位置：瀏覽器「預設下載資料夾」或手機相簿/檔案管理員。`, 'success');
+        showToast(`🎉 <strong>下載完成！</strong><br>📁 檔名：<code>${fileName}</code><br>📍 已儲存至手機/電腦的「下載資料夾」或相簿。`, 'success');
 
         setTimeout(() => {
             hideToast();
         }, 6000);
-    });
+    }
 </script>
 
 </body>

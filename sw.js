@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kindergarten-card-v7';
+const CACHE_NAME = 'kindergarten-card-v8';
 
 const urlsToCache = [
   './',
