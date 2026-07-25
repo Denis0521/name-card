@@ -31,18 +31,46 @@
             max-width: 650px;
             width: 100%;
         }
-        h2 { text-align: center; color: #ff8a65; margin-top: 0; margin-bottom: 15px; font-size: 22px; }
+        h2 { text-align: center; color: #ff8a65; margin-top: 0; margin-bottom: 10px; font-size: 22px; }
         
+        /* 使用說明摺疊區塊 */
+        .instructions-details {
+            background-color: #fff8f6;
+            border: 1px solid #ffe0b2;
+            border-radius: 12px;
+            padding: 10px 14px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #5d4037;
+        }
+        .instructions-details summary {
+            font-weight: bold;
+            cursor: pointer;
+            color: #e65100;
+            outline: none;
+            user-select: none;
+        }
+        .instructions-content {
+            margin-top: 8px;
+            line-height: 1.6;
+        }
+        .instructions-content ol {
+            margin: 0;
+            padding-left: 18px;
+        }
+
         /* 學生頁籤與動態操作 */
-        .tabs-wrapper { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
+        .tabs-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .student-tabs { display: flex; gap: 5px; }
         .tab-btn {
             padding: 8px 12px; background: #f0f0f0; border: 1px solid #ddd;
             border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; white-space: nowrap;
         }
         .tab-btn.active { background: #ff8a65; color: white; border-color: #ff8a65; }
-        .btn-icon { background: #e0e0e0; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+        .btn-icon { background: #e0e0e0; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .btn-icon:hover { background: #ccc; }
+        .btn-danger { background-color: #ffebee; color: #c62828; }
+        .btn-danger:hover { background-color: #ffcdd2; }
 
         /* RWD 網格設定 */
         .control-group {
@@ -54,12 +82,10 @@
         .input-box { display: flex; flex-direction: column; }
         .span-12 { grid-column: span 12; }
 
-        /* 同一排欄位比例分配（縮短欄位寬度） */
         .span-class { grid-column: span 4; }
         .span-name { grid-column: span 4; }
         .span-seat { grid-column: span 4; }
         
-        /* 手機版保持同一行不換行，微調內距 */
         @media (max-width: 480px) {
             .control-group { gap: 4px; }
             input[type="text"], select { padding: 6px 4px !important; font-size: 13px !important; }
@@ -93,7 +119,6 @@
         .button-group { display: flex; flex-direction: column; gap: 10px; }
         .btn-download { color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: bold; transition: all 0.2s; }
         .btn-single { background-color: #ff8a65; box-shadow: 0 4px 12px rgba(255, 138, 101, 0.3); }
-        .btn-a4-png { background-color: #4caf50; box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3); }
         .btn-a4-pdf { background-color: #2196F3; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); }
         .btn-download:active { transform: scale(0.98); }
 
@@ -105,12 +130,28 @@
 
 <div class="container">
     <h2>✨ 幼兒園名片產生器 ✨</h2>
+
+    <!-- 使用說明說明區塊 -->
+    <details class="instructions-details">
+        <summary>💡 使用說明與操作指南（點擊展開）</summary>
+        <div class="instructions-content">
+            <ol>
+                <li><b>新增與編輯</b>：點擊上方頁籤切換學生，或點擊 ➕ 新增學生資料[span_6](start_span)[span_6](end_span)。</li>
+                <li><b>填寫與上傳</b>：設定底圖風格、班級、姓名、座號並上傳大頭照[span_7](start_span)[span_7](end_span)。</li>
+                <li><b>相片微調</b>：上傳照片後，可利用下方「縮放」與「左右/上下」滑桿微調位置[span_8](start_span)[span_8](end_span)。</li>
+                <li><b>模式切換</b>：使用「預覽當前單張」確認細節，或切換至「預覽 A4 排版」查看列印效果[span_9](start_span)[span_9](end_span)。</li>
+                <li><b>匯出下載</b>：可選擇儲存單張名片 PNG，或直接輸出可供 A4 列印的 PDF 檔案（一頁 6 張）[span_10](start_span)[span_10](end_span)。</li>
+                <li><b>資料清理</b>：若要清除個別學生可按 🗑️，若要重設所有資料可按 🧹[span_11](start_span)[span_11](end_span)。</li>
+            </ol>
+        </div>
+    </details>
     
     <label>請選擇要編輯的學生：</label>
     <div class="tabs-wrapper">
         <div class="student-tabs" id="tabsContainer"></div>
         <button class="btn-icon" id="addStudentBtn" title="新增學生">➕</button>
         <button class="btn-icon" id="removeStudentBtn" title="刪除當前學生" style="color:red;">🗑️</button>
+        <button class="btn-icon btn-danger" id="clearAllBtn" title="清除所有資料">🧹</button>
     </div>
 
     <div class="control-group">
@@ -132,7 +173,6 @@
             <input type="file" id="photoInput" accept="image/*">
         </div>
         
-        <!-- 同一排精簡欄位 -->
         <div class="input-box span-class">
             <label>班級</label>
             <select id="classSelect">
@@ -187,7 +227,6 @@
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
 
-    // 動態生成 1~20 號繁體字選項
     function initSeatOptions() {
         const seatSelect = document.getElementById('seatSelect');
         for (let i = 1; i <= 20; i++) {
@@ -198,7 +237,6 @@
         }
     }
 
-    // 預載底圖
     function getBaseImage(src) {
         if (!baseImgCache[src]) {
             const img = new Image();
@@ -209,9 +247,8 @@
         return baseImgCache[src];
     }
 
-    // 初始化與讀取暫存
     function init() {
-        initSeatOptions(); // 生成繁體座號選項
+        initSeatOptions();
 
         const savedData = localStorage.getItem('kindergartenCards');
         if (savedData) {
@@ -305,6 +342,7 @@
 
     // 綁定事件
     document.getElementById('addStudentBtn').addEventListener('click', () => { addNewStudent(); switchStudent(students.length - 1); });
+    
     document.getElementById('removeStudentBtn').addEventListener('click', () => {
         if (students.length <= 1) return alert("至少需保留一位學生！");
         if (confirm("確定要刪除這位學生的資料嗎？")) {
@@ -313,6 +351,18 @@
             buildTabs();
             switchStudent(currentIdx);
             saveToStorage();
+        }
+    });
+
+    // 新增：一鍵清除所有學生與暫存
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if (confirm("⚠️ 警告：這將會清除所有學生的名片資料與照片，且無法復原！確定要全部清除嗎？")) {
+            localStorage.removeItem('kindergartenCards');
+            students = [];
+            for(let i=0; i<6; i++) addNewStudent();
+            buildTabs();
+            switchStudent(0);
+            showToast("🧹 已成功清除所有資料！");
         }
     });
 
@@ -334,21 +384,18 @@
         render();
     });
 
-    // 班級選單事件
     document.getElementById('classSelect').addEventListener('change', function() {
         students[currentIdx].classText = this.value;
         saveToStorage();
         render();
     });
 
-    // 座號選單事件
     document.getElementById('seatSelect').addEventListener('change', function() {
         students[currentIdx].seatText = this.value;
         saveToStorage();
         render();
     });
 
-    // 姓名輸入欄位事件
     document.getElementById('nameInput').addEventListener('input', function() {
         let val = this.value.replace(/\s+/g, '').split('').join(' ');
         if (this.value !== val) this.value = val;
@@ -365,7 +412,6 @@
         });
     });
 
-    // 圖片上傳
     document.getElementById('photoInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
