@@ -1,5 +1,5 @@
-// 請將這行改為全新的版號 (如 v12)
-const CACHE_NAME = 'kindergarten-card-v12';
+// 將版號改為全新的 (例如 v13)
+const CACHE_NAME = 'kindergarten-card-v13';
 
 const urlsToCache = [
   './',
@@ -14,7 +14,6 @@ const urlsToCache = [
   './1784875917011_2.png',
   './icon-192.png',
   './icon-512.png',
-  // 新增 jsPDF 外部資源，確保離線時也能產生 PDF
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 ];
 

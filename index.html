@@ -128,9 +128,15 @@
             <input type="file" id="photoInput" accept="image/*">
         </div>
         
+        <!-- 同一排：班級 (選單)、姓名 (輸入框)、座號 (選單) -->
         <div class="input-box">
             <label>班級</label>
-            <input type="text" id="classInput" placeholder="班級">
+            <select id="classSelect">
+                <option value="">請選擇班級</option>
+                <option value="大班">大班</option>
+                <option value="中班">中班</option>
+                <option value="小班">小班</option>
+            </select>
         </div>
         <div class="input-box">
             <label>姓名</label>
@@ -138,7 +144,9 @@
         </div>
         <div class="input-box">
             <label>座號</label>
-            <input type="text" id="seatInput" placeholder="座號">
+            <select id="seatSelect">
+                <option value="">請選擇座號</option>
+            </select>
         </div>
         
         <div class="photo-controls">
@@ -175,6 +183,17 @@
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
 
+    // 動態生成 1~20 號繁體字選項
+    function initSeatOptions() {
+        const seatSelect = document.getElementById('seatSelect');
+        for (let i = 1; i <= 20; i++) {
+            const opt = document.createElement('option');
+            opt.value = `${i} 號`;
+            opt.textContent = `${i} 號`;
+            seatSelect.appendChild(opt);
+        }
+    }
+
     // 預載底圖
     function getBaseImage(src) {
         if (!baseImgCache[src]) {
@@ -188,11 +207,12 @@
 
     // 初始化與讀取暫存
     function init() {
+        initSeatOptions(); // 生成繁體座號選項
+
         const savedData = localStorage.getItem('kindergartenCards');
         if (savedData) {
             try {
                 students = JSON.parse(savedData);
-                // 恢復圖片物件
                 students.forEach(s => {
                     if (s.userImgBase64) {
                         const img = new Image();
@@ -214,7 +234,7 @@
     function saveToStorage() {
         const dataToSave = students.map(s => {
             const clone = {...s};
-            delete clone.userImg; // 避免循環結構，只存 base64
+            delete clone.userImg;
             return clone;
         });
         try {
@@ -239,7 +259,6 @@
         saveToStorage();
     }
 
-    // 更新 Tab 介面（加上完成狀態 ✅）
     function buildTabs() {
         const container = document.getElementById('tabsContainer');
         container.innerHTML = '';
@@ -270,9 +289,9 @@
         const s = students[currentIdx];
         document.getElementById('bgSelectLabel').innerText = `🖼️ 【學生 ${idx + 1}】底圖`;
         document.getElementById('bgSelect').value = s.bgSrc;
-        document.getElementById('classInput').value = s.classText;
+        document.getElementById('classSelect').value = s.classText || '';
         document.getElementById('nameInput').value = s.nameText;
-        document.getElementById('seatInput').value = s.seatText;
+        document.getElementById('seatSelect').value = s.seatText || '';
         document.getElementById('scale').value = s.scale;
         document.getElementById('xOffset').value = s.xOffset;
         document.getElementById('yOffset').value = s.yOffset;
@@ -311,15 +330,27 @@
         render();
     });
 
-    ['classInput', 'nameInput', 'seatInput'].forEach(id => {
-        document.getElementById(id).addEventListener('input', function() {
-            let val = this.value.replace(/\s+/g, '').split('').join(' ');
-            if (this.value !== val) this.value = val;
-            const key = id.replace('Input', 'Text');
-            students[currentIdx][key] = this.value;
-            saveToStorage();
-            render();
-        });
+    // 班級選單事件
+    document.getElementById('classSelect').addEventListener('change', function() {
+        students[currentIdx].classText = this.value;
+        saveToStorage();
+        render();
+    });
+
+    // 座號選單事件
+    document.getElementById('seatSelect').addEventListener('change', function() {
+        students[currentIdx].seatText = this.value;
+        saveToStorage();
+        render();
+    });
+
+    // 姓名輸入欄位事件
+    document.getElementById('nameInput').addEventListener('input', function() {
+        let val = this.value.replace(/\s+/g, '').split('').join(' ');
+        if (this.value !== val) this.value = val;
+        students[currentIdx].nameText = this.value;
+        saveToStorage();
+        render();
     });
 
     ['scale', 'xOffset', 'yOffset'].forEach(id => {
@@ -330,7 +361,7 @@
         });
     });
 
-    // 圖片壓縮與上傳
+    // 圖片上傳
     document.getElementById('photoInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
@@ -338,7 +369,6 @@
         reader.onload = function(event) {
             const img = new Image();
             img.onload = () => {
-                // 背景壓縮機制避免 localStorage 爆滿
                 const offCanvas = document.createElement('canvas');
                 const MAX_WIDTH = 800;
                 let width = img.width;
@@ -367,7 +397,6 @@
         reader.readAsDataURL(file);
     });
 
-    // 畫布繪製邏輯 (保留您原有的精準座標與圓角裁切)
     function roundedRectPath(ctx, x, y, width, height, radius) {
         ctx.beginPath();
         ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y);
@@ -435,7 +464,6 @@
 
         students.forEach((sData, idx) => {
             const r = Math.floor((idx % 6) / cols), c = (idx % 6) % cols;
-            // 這裡只先預覽前6位，若需預覽多頁可再優化
             if(idx < 6) {
                 const x = gapX + c * (cardWidth + gapX), y = gapY + r * (cardHeight + gapY);
                 const cardCanvas = createCardCanvas(sData);
@@ -464,13 +492,12 @@
         showToast(`🎉 成功下載：${fileName}`);
     });
 
-    // 匯出 PDF 功能
     document.getElementById('downloadA4PdfBtn').addEventListener('click', () => {
         const { jsPDF } = window.jspdf;
         const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
         
-        const a4W = 210, a4H = 297; // A4 尺寸 mm
-        const cardW = 90, cardH = 54; // 名片標準尺寸 mm
+        const a4W = 210, a4H = 297;
+        const cardW = 90, cardH = 54;
         const gapX = (a4W - (2 * cardW)) / 3, gapY = (a4H - (3 * cardH)) / 4;
 
         let itemsOnPage = 0;
