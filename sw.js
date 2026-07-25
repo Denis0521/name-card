@@ -1,4 +1,4 @@
-// 將版號改為全新的 (例如 v14)
+// 快取版本號升級至 v14，確保最新介面能生效
 const CACHE_NAME = 'kindergarten-card-v14';
 
 const urlsToCache = [
