@@ -1,5 +1,5 @@
-// 將版號改為全新的 (例如 v13)
-const CACHE_NAME = 'kindergarten-card-v13';
+// 將版號改為全新的 (例如 v14)
+const CACHE_NAME = 'kindergarten-card-v14';
 
 const urlsToCache = [
   './',

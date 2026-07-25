@@ -47,29 +47,33 @@
         /* RWD 網格設定 */
         .control-group {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 8px;
             margin-bottom: 15px;
         }
         .input-box { display: flex; flex-direction: column; }
-        .span-2 { grid-column: span 2; }
-        .span-3 { grid-column: span 3; }
+        .span-12 { grid-column: span 12; }
+
+        /* 同一排欄位比例分配（縮短欄位寬度） */
+        .span-class { grid-column: span 4; }
+        .span-name { grid-column: span 4; }
+        .span-seat { grid-column: span 4; }
         
-        /* 手機版單欄配置 */
-        @media (max-width: 768px) {
-            .control-group { grid-template-columns: 1fr; }
-            .span-2, .span-3 { grid-column: span 1; }
+        /* 手機版保持同一行不換行，微調內距 */
+        @media (max-width: 480px) {
+            .control-group { gap: 4px; }
+            input[type="text"], select { padding: 6px 4px !important; font-size: 13px !important; }
+            label { font-size: 12px !important; }
         }
 
         label { font-weight: bold; margin-bottom: 5px; color: #555; font-size: 13px; }
         input[type="text"], input[type="file"], select {
-            padding: 8px; border: 1.5px solid #e0e0e0; border-radius: 8px;
+            padding: 8px 6px; border: 1.5px solid #e0e0e0; border-radius: 8px;
             font-size: 14px; font-weight: bold; outline: none; width: 100%; background-color: #fafafa;
         }
         input[type="text"]:focus, select:focus { border-color: #ff8a65; background-color: #fff; }
         
-        .photo-controls { grid-column: span 3; background: #fff9e6; padding: 12px; border-radius: 12px; border: 1px dashed #ffcc80; position: relative; }
-        @media (max-width: 768px) { .photo-controls { grid-column: span 1; } }
+        .photo-controls { grid-column: span 12; background: #fff9e6; padding: 12px; border-radius: 12px; border: 1px dashed #ffcc80; position: relative; }
         
         .reset-btn { position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 11px; background: #ffcc80; border: none; border-radius: 4px; cursor: pointer; }
         .reset-btn:hover { background: #ffb74d; }
@@ -110,7 +114,7 @@
     </div>
 
     <div class="control-group">
-        <div class="input-box span-3">
+        <div class="input-box span-12">
             <label id="bgSelectLabel">🖼️ 底圖風格</label>
             <select id="bgSelect">
                 <option value="1000073981.png">🌞 陽光黃</option>
@@ -123,29 +127,29 @@
             </select>
         </div>
 
-        <div class="input-box span-3">
+        <div class="input-box span-12">
             <label id="currentStudentLabel">📸 上傳大頭照</label>
             <input type="file" id="photoInput" accept="image/*">
         </div>
         
-        <!-- 同一排：班級 (選單)、姓名 (輸入框)、座號 (選單) -->
-        <div class="input-box">
+        <!-- 同一排精簡欄位 -->
+        <div class="input-box span-class">
             <label>班級</label>
             <select id="classSelect">
-                <option value="">請選擇班級</option>
-                <option value="大班">大班</option>
-                <option value="中班">中班</option>
-                <option value="小班">小班</option>
+                <option value="">選擇班級</option>
+                <option value="大 班">大 班</option>
+                <option value="中 班">中 班</option>
+                <option value="小 班">小 班</option>
             </select>
         </div>
-        <div class="input-box">
+        <div class="input-box span-name">
             <label>姓名</label>
             <input type="text" id="nameInput" placeholder="姓名">
         </div>
-        <div class="input-box">
+        <div class="input-box span-seat">
             <label>座號</label>
             <select id="seatSelect">
-                <option value="">請選擇座號</option>
+                <option value="">選擇座號</option>
             </select>
         </div>
         
