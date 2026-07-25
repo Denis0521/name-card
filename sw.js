@@ -1,5 +1,5 @@
-// 請將這行改為全新的版號 (如 v10)
-const CACHE_NAME = 'kindergarten-card-v10';
+// 請將這行改為全新的版號 (如 v11)
+const CACHE_NAME = 'kindergarten-card-v11';
 
 const urlsToCache = [
   './',
