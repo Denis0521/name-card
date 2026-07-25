@@ -31,33 +31,7 @@
             max-width: 650px;
             width: 100%;
         }
-        h2 { text-align: center; color: #ff8a65; margin-top: 0; margin-bottom: 10px; font-size: 22px; }
-        
-        /* 使用說明摺疊區塊 */
-        .instructions-details {
-            background-color: #fff8f6;
-            border: 1px solid #ffe0b2;
-            border-radius: 12px;
-            padding: 10px 14px;
-            margin-bottom: 15px;
-            font-size: 13px;
-            color: #5d4037;
-        }
-        .instructions-details summary {
-            font-weight: bold;
-            cursor: pointer;
-            color: #e65100;
-            outline: none;
-            user-select: none;
-        }
-        .instructions-content {
-            margin-top: 8px;
-            line-height: 1.6;
-        }
-        .instructions-content ol {
-            margin: 0;
-            padding-left: 18px;
-        }
+        h2 { text-align: center; color: #ff8a65; margin-top: 0; margin-bottom: 15px; font-size: 22px; }
 
         /* 學生頁籤與動態操作 */
         .tabs-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
@@ -130,21 +104,6 @@
 
 <div class="container">
     <h2>✨ 幼兒園名片產生器 ✨</h2>
-
-    <!-- 使用說明說明區塊 -->
-    <details class="instructions-details">
-        <summary>💡 使用說明與操作指南（點擊展開）</summary>
-        <div class="instructions-content">
-            <ol>
-                <li><b>新增與編輯</b>：點擊上方頁籤切換學生，或點擊 ➕ 新增學生資料[span_6](start_span)[span_6](end_span)。</li>
-                <li><b>填寫與上傳</b>：設定底圖風格、班級、姓名、座號並上傳大頭照[span_7](start_span)[span_7](end_span)。</li>
-                <li><b>相片微調</b>：上傳照片後，可利用下方「縮放」與「左右/上下」滑桿微調位置[span_8](start_span)[span_8](end_span)。</li>
-                <li><b>模式切換</b>：使用「預覽當前單張」確認細節，或切換至「預覽 A4 排版」查看列印效果[span_9](start_span)[span_9](end_span)。</li>
-                <li><b>匯出下載</b>：可選擇儲存單張名片 PNG，或直接輸出可供 A4 列印的 PDF 檔案（一頁 6 張）[span_10](start_span)[span_10](end_span)。</li>
-                <li><b>資料清理</b>：若要清除個別學生可按 🗑️，若要重設所有資料可按 🧹[span_11](start_span)[span_11](end_span)。</li>
-            </ol>
-        </div>
-    </details>
     
     <label>請選擇要編輯的學生：</label>
     <div class="tabs-wrapper">
@@ -354,7 +313,7 @@
         }
     });
 
-    // 新增：一鍵清除所有學生與暫存
+    // 一鍵清除所有學生與暫存
     document.getElementById('clearAllBtn').addEventListener('click', () => {
         if (confirm("⚠️ 警告：這將會清除所有學生的名片資料與照片，且無法復原！確定要全部清除嗎？")) {
             localStorage.removeItem('kindergartenCards');
