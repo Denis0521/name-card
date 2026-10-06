@@ -1,5 +1,5 @@
-// 快取版本號升級至 v18，確保最新介面能生效
-const CACHE_NAME = 'kindergarten-card-v18';
+// 快取版本號升級至 v17，確保最新介面能生效
+const CACHE_NAME = 'kindergarten-card-v17';
 
 const urlsToCache = [
   './',

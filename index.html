@@ -31,77 +31,93 @@
     <style>
         * { box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", 'Microsoft JhengHei', 'Noto Sans TC', sans-serif;
-            background-color: #f7f9fc; margin: 0; padding: 10px 10px 90px;
-            display: flex; flex-direction: column; align-items: center; color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", 'Microsoft JhengHei', sans-serif;
+            background-color: #f7f9fc;
+            margin: 0;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #333;
         }
-        .container { background: #fff; padding: 14px; border-radius: 20px; box-shadow: 0 8px 25px rgba(0,0,0,0.08); max-width: 650px; width: 100%; }
-        h2 { text-align: center; color: #ff8a65; margin: 0 0 10px; font-size: 20px; }
-        button { font-family: inherit; }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            max-width: 650px;
+            width: 100%;
+        }
+        h2 { text-align: center; color: #ff8a65; margin-top: 0; margin-bottom: 15px; font-size: 22px; }
 
-        /* 學生頁籤 */
-        .tabs-wrapper { display: flex; align-items: center; gap: 6px; margin-bottom: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+        /* 學生頁籤與動態操作 */
+        .tabs-wrapper { display: flex; align-items: center; gap: 8px; margin-bottom: 15px; overflow-x: auto; padding-bottom: 5px; }
         .student-tabs { display: flex; gap: 5px; }
-        .tab-btn { padding: 7px 11px; background: #f0f0f0; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; white-space: nowrap; color: #555; }
-        .tab-btn.active { background: #ff8a65; color: #fff; border-color: #ff8a65; }
-        .tab-btn.done:not(.active) { background: #e8f5e9; border-color: #a5d6a7; color: #2e7d32; }
-        .btn-add { flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; border: 1.5px dashed #ff8a65; background: #fff; color: #ff8a65; font-size: 20px; line-height: 1; cursor: pointer; }
+        .tab-btn {
+            padding: 8px 12px; background: #f0f0f0; border: 1px solid #ddd;
+            border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 13px; white-space: nowrap;
+        }
+        .tab-btn.active { background: #ff8a65; color: white; border-color: #ff8a65; }
+        .btn-icon { background: #e0e0e0; border: none; border-radius: 50%; width: 30px; height: 30px; cursor: pointer; font-weight: bold; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .btn-icon:hover { background: #ccc; }
+        .btn-danger { background-color: #ffebee; color: #c62828; }
+        .btn-danger:hover { background-color: #ffcdd2; }
 
-        /* 預覽區（單張模式時固定在上方） */
-        .preview-sticky { position: sticky; top: 0; z-index: 10; background: #fff; padding: 4px 0 6px; }
-        body.mode-a4 .preview-sticky { position: static; }
-        .seg { display: flex; justify-content: center; margin-bottom: 6px; }
-        .seg button { padding: 5px 16px; border: 1px solid #ff8a65; background: #fff; color: #ff8a65; font-weight: bold; font-size: 13px; cursor: pointer; }
-        .seg button:first-child { border-radius: 20px 0 0 20px; }
-        .seg button:last-child { border-radius: 0 20px 20px 0; border-left: 0; }
-        .seg button.active { background: #ff8a65; color: #fff; }
-        .canvas-container { width: 100%; overflow: hidden; border-radius: 12px; border: 2px solid #eee; background: #e0e0e0; display: flex; justify-content: center; align-items: center; }
-        canvas { width: 100%; height: auto; display: block; }
-        body.mode-single canvas { touch-action: none; cursor: grab; }
-        .stu-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-top: 6px; }
-        .stu-nav button { flex: 1; padding: 9px 6px; border: 0; border-radius: 10px; background: #fff3ec; color: #e64a19; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .stu-nav button:active { background: #ffe0d2; }
-        #navInfo { flex: 0 0 auto; font-size: 13px; color: #777; font-weight: bold; min-width: 70px; text-align: center; }
-
-        /* 欄位 */
-        .panel { margin-top: 10px; }
-        .control-group { display: grid; grid-template-columns: repeat(12, 1fr); gap: 8px; margin-bottom: 10px; }
+        /* RWD 網格設定 */
+        .control-group {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 8px;
+            margin-bottom: 15px;
+        }
         .input-box { display: flex; flex-direction: column; }
-        .span-4 { grid-column: span 4; }
         .span-12 { grid-column: span 12; }
-        label { font-weight: bold; margin-bottom: 4px; color: #555; font-size: 13px; }
-        input[type="text"], select { padding: 10px 6px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 15px; font-weight: bold; outline: none; width: 100%; background: #fafafa; }
-        input[type="text"]:focus, select:focus { border-color: #ff8a65; background: #fff; }
 
-        .photo-panel { background: #fff9e6; padding: 10px; border-radius: 12px; border: 1px dashed #ffcc80; margin-bottom: 10px; }
-        .photo-row { display: flex; gap: 8px; margin-bottom: 8px; }
-        .btn-main { flex: 2; padding: 11px 8px; border: 0; border-radius: 10px; background: #ff8a65; color: #fff; font-weight: bold; font-size: 15px; cursor: pointer; }
-        .btn-soft { flex: 1; padding: 11px 8px; border: 0; border-radius: 10px; background: #ffe0b2; color: #8d5a00; font-weight: bold; font-size: 14px; cursor: pointer; }
-        .slider-group { display: flex; align-items: center; gap: 8px; }
-        .slider-group label { margin: 0; width: 38px; font-size: 12px; }
+        .span-class { grid-column: span 4; }
+        .span-name { grid-column: span 4; }
+        .span-seat { grid-column: span 4; }
+        
+        @media (max-width: 480px) {
+            .control-group { gap: 4px; }
+            input[type="text"], select { padding: 6px 4px !important; font-size: 13px !important; }
+            label { font-size: 12px !important; }
+        }
+
+        label { font-weight: bold; margin-bottom: 5px; color: #555; font-size: 13px; }
+        input[type="text"], input[type="file"], select {
+            padding: 8px 6px; border: 1.5px solid #e0e0e0; border-radius: 8px;
+            font-size: 14px; font-weight: bold; outline: none; width: 100%; background-color: #fafafa;
+        }
+        input[type="text"]:focus, select:focus { border-color: #ff8a65; background-color: #fff; }
+        
+        .photo-controls { grid-column: span 12; background: #fff9e6; padding: 12px; border-radius: 12px; border: 1px dashed #ffcc80; position: relative; }
+        
+        .reset-btn { position: absolute; top: 10px; right: 10px; padding: 4px 8px; font-size: 11px; background: #ffcc80; border: none; border-radius: 4px; cursor: pointer; }
+        .reset-btn:hover { background: #ffb74d; }
+        
+        .slider-group { display: flex; align-items: center; margin-bottom: 6px; }
+        .slider-group:last-child { margin-bottom: 0; }
+        .slider-group label { width: 50px; margin-bottom: 0; font-size: 12px; }
         input[type="range"] { flex-grow: 1; accent-color: #ff8a65; }
-        .hint { font-size: 12px; color: #8d6e63; margin-top: 6px; }
 
-        .apply-row { display: flex; gap: 8px; margin: -2px 0 10px; }
-        .link-btn { flex: 1; padding: 8px 6px; border: 1px solid #ffccbc; border-radius: 8px; background: #fff; color: #e64a19; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .view-switch { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
+        .view-btn { padding: 6px 15px; border-radius: 20px; border: 1px solid #ff8a65; background: white; color: #ff8a65; font-weight: bold; cursor: pointer; font-size: 13px; }
+        .view-btn.active { background: #ff8a65; color: white; }
 
-        .button-group { display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
-        .btn-download { color: #fff; border: none; padding: 13px 20px; font-size: 15px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: bold; transition: all 0.2s; }
-        .btn-single { background: #ff8a65; box-shadow: 0 4px 12px rgba(255,138,101,0.3); }
-        .btn-a4-pdf { background: #2196F3; box-shadow: 0 4px 12px rgba(33,150,243,0.3); }
+        .canvas-container { width: 100%; overflow: hidden; border-radius: 12px; border: 2px solid #eee; margin-bottom: 15px; background-color: #e0e0e0; display: flex; justify-content: center; align-items: center; }
+        canvas { width: 100%; height: auto; display: block; }
+        
+        .button-group { display: flex; flex-direction: column; gap: 10px; }
+        .btn-download { color: white; border: none; padding: 12px 20px; font-size: 15px; border-radius: 30px; cursor: pointer; width: 100%; font-weight: bold; transition: all 0.2s; }
+        .btn-single { background-color: #ff8a65; box-shadow: 0 4px 12px rgba(255, 138, 101, 0.3); }
+        .btn-a4-pdf { background-color: #2196F3; box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3); }
         .btn-download:active { transform: scale(0.98); }
-        .btn-download:disabled { opacity: .6; }
 
-        .manage { display: flex; gap: 8px; margin-top: 14px; }
-        .manage button { flex: 1; padding: 9px 6px; border-radius: 8px; border: 1px solid #ddd; background: #fafafa; color: #777; font-size: 12px; cursor: pointer; }
-        .manage .danger { color: #c62828; border-color: #ffcdd2; background: #fff5f5; }
-
-        .toast-msg { display: none; margin-top: 12px; padding: 12px 15px; border-radius: 12px; font-size: 14px; text-align: center; }
-        .toast-success { background: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
-        @media (max-width: 480px) { label { font-size: 12px; } }
+        .toast-msg { display: none; margin-top: 15px; padding: 12px 15px; border-radius: 12px; font-size: 14px; text-align: center; }
+        .toast-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
     </style>
 </head>
-<body class="mode-single">
+<body>
 <div id="installBanner" style="display:none;position:fixed;left:0;right:0;bottom:0;z-index:99999;padding:12px 14px;background:#ff8a65;color:#fff;align-items:center;justify-content:space-between;gap:10px;box-shadow:0 -2px 10px rgba(0,0,0,.25);font-size:15px">
   <span id="installText">安裝「幼兒園名片」到主畫面，使用更方便</span>
   <span style="display:flex;gap:8px;flex-shrink:0">
@@ -113,171 +129,116 @@
 
 <div class="container">
     <h2>✨ 幼兒園名片產生器 ✨</h2>
-
-    <div class="tabs-wrapper" id="tabsWrapper">
+    
+    <label>請選擇要編輯的學生：</label>
+    <div class="tabs-wrapper">
         <div class="student-tabs" id="tabsContainer"></div>
-        <button class="btn-add" id="addStudentBtn" title="新增學生">＋</button>
+        <button class="btn-icon" id="addStudentBtn" title="新增學生">➕</button>
+        <button class="btn-icon" id="removeStudentBtn" title="刪除當前學生" style="color:red;">🗑️</button>
+        <button class="btn-icon btn-danger" id="clearAllBtn" title="清除所有資料">🧹</button>
     </div>
 
-    <div class="preview-sticky">
-        <div class="seg">
-            <button class="active" id="viewSingleBtn">🔍 單張</button>
-            <button id="viewA4Btn">🖨️ A4 排版</button>
+    <div class="control-group">
+        <div class="input-box span-12">
+            <label id="bgSelectLabel">🖼️ 底圖風格</label>
+            <select id="bgSelect">
+                <option value="1000073981.png">🌞 陽光黃</option>
+                <option value="1000073983.png">🌲 綠森林</option>
+                <option value="1000073984.png">🏕️ 深綠色</option>
+                <option value="1784874155351.png">🏡 童話小鎮 A</option>
+                <option value="1784874240076.png">🚀 夢幻太空 A</option>
+                <option value="1784876186703_2.png">🏡 童話小鎮 B</option>
+                <option value="1784875917011_2.png">🚀 夢幻太空 B</option>
+            </select>
         </div>
-        <div class="canvas-container"><canvas id="myCanvas"></canvas></div>
-        <div class="stu-nav">
-            <button id="prevBtn">◀ 上一位</button>
-            <span id="navInfo">1 / 6</span>
-            <button id="nextBtn">下一位 ▶</button>
+
+        <div class="input-box span-12">
+            <label id="currentStudentLabel">📸 上傳大頭照</label>
+            <input type="file" id="photoInput" accept="image/*">
+        </div>
+        
+        <div class="input-box span-class">
+            <label>班級</label>
+            <select id="classSelect">
+                <option value="">選擇班級</option>
+                <option value="大 班">大 班</option>
+                <option value="中 班">中 班</option>
+                <option value="小 班">小 班</option>
+            </select>
+        </div>
+        <div class="input-box span-name">
+            <label>姓名</label>
+            <input type="text" id="nameInput" placeholder="姓名">
+        </div>
+        <div class="input-box span-seat">
+            <label>座號</label>
+            <select id="seatSelect">
+                <option value="">選擇座號</option>
+            </select>
+        </div>
+        
+        <div class="photo-controls">
+            <button class="reset-btn" id="resetPhotoBtn">🔄 重設照片</button>
+            <label style="display: block; margin-bottom: 6px; font-size: 12px;">🤏 調整當前相片位移與大小</label>
+            <div class="slider-group"><label>縮放</label><input type="range" id="scale" min="0.5" max="3" step="0.05" value="1"></div>
+            <div class="slider-group"><label>左右</label><input type="range" id="xOffset" min="-500" max="500" value="0"></div>
+            <div class="slider-group"><label>上下</label><input type="range" id="yOffset" min="-500" max="500" value="0"></div>
         </div>
     </div>
 
-    <div class="panel">
-        <div class="control-group">
-            <div class="input-box span-4">
-                <label>班級</label>
-                <select id="classSelect">
-                    <option value="">選擇班級</option>
-                    <option value="大 班">大 班</option>
-                    <option value="中 班">中 班</option>
-                    <option value="小 班">小 班</option>
-                </select>
-            </div>
-            <div class="input-box span-4">
-                <label>姓名</label>
-                <input type="text" id="nameInput" placeholder="姓名" autocomplete="off">
-            </div>
-            <div class="input-box span-4">
-                <label>座號</label>
-                <select id="seatSelect"><option value="">選擇座號</option></select>
-            </div>
-        </div>
+    <div class="view-switch">
+        <button class="view-btn active" id="viewSingleBtn">🔍 預覽當前單張</button>
+        <button class="view-btn" id="viewA4Btn">🖨️ 預覽 A4 排版</button>
+    </div>
 
-        <div class="photo-panel">
-            <div class="photo-row">
-                <button class="btn-main" id="pickPhotoBtn">📷 選擇照片</button>
-                <button class="btn-soft" id="resetPhotoBtn">↺ 重設位置</button>
-            </div>
-            <div class="slider-group"><label>縮放</label><input type="range" id="scale" min="1" max="4" step="0.02" value="1"></div>
-            <div class="hint">💡 在預覽圖上直接拖曳照片移動，雙指（或滾輪）縮放。照片會自動填滿相框，不會露出白邊。</div>
-            <input type="file" id="photoInput" accept="image/*" hidden>
-        </div>
-
-        <div class="control-group">
-            <div class="input-box span-12">
-                <label>🖼️ 底圖風格</label>
-                <select id="bgSelect">
-                    <option value="1000073981.png">🌞 陽光黃</option>
-                    <option value="1000073983.png">🌲 綠森林</option>
-                    <option value="1000073984.png">🏕️ 深綠色</option>
-                    <option value="1784874155351.png">🏡 童話小鎮 A</option>
-                    <option value="1784874240076.png">🚀 夢幻太空 A</option>
-                    <option value="1784876186703_2.png">🏡 童話小鎮 B</option>
-                    <option value="1784875917011_2.png">🚀 夢幻太空 B</option>
-                </select>
-            </div>
-        </div>
-        <div class="apply-row">
-            <button class="link-btn" id="applyClassBtn">全部學生套用此班級</button>
-            <button class="link-btn" id="applyBgBtn">全部學生套用此底圖</button>
-        </div>
+    <div class="canvas-container">
+        <canvas id="myCanvas"></canvas>
     </div>
 
     <div class="button-group">
         <button class="btn-download btn-single" id="downloadSingleBtn">📥 儲存單張名片 (PNG)</button>
         <button class="btn-download btn-a4-pdf" id="downloadA4PdfBtn">📄 輸出 A4 列印檔 (PDF)</button>
     </div>
-
-    <div class="manage">
-        <button id="removeStudentBtn" class="danger">🗑️ 刪除此學生</button>
-        <button id="clearAllBtn" class="danger">🧹 清除全部資料</button>
-    </div>
-
+    
     <div class="toast-msg" id="toastMsg"></div>
 </div>
 
 <script>
-    // ==================== 底圖相框（照片窗口）位置：以底圖寬高的比例表示 [左, 上, 右, 下] ====================
-    const FRAMES = {
-        '1000073981.png':      [0.650, 0.130, 0.949, 0.668],
-        '1000073983.png':      [0.651, 0.126, 0.949, 0.677],
-        '1000073984.png':      [0.652, 0.136, 0.940, 0.670],
-        '1784874155351.png':   [0.647, 0.129, 0.943, 0.666],
-        '1784874240076.png':   [0.647, 0.136, 0.943, 0.668],
-        '1784876186703_2.png': [0.662, 0.152, 0.940, 0.650],
-        '1784875917011_2.png': [0.666, 0.160, 0.930, 0.655]
-    };
-    const DEFAULT_FRAME = [0.650, 0.130, 0.945, 0.668];
-    const SEAT_MAX = 30, PER_PAGE = 6;
-
     const baseImgCache = {};
     let students = [];
     let currentIdx = 0;
     let currentViewMode = 'single';
     const canvas = document.getElementById('myCanvas');
     const ctx = canvas.getContext('2d');
-    const $ = id => document.getElementById(id);
-    const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
 
-    // ---------- 底圖載入 ----------
+    function initSeatOptions() {
+        const seatSelect = document.getElementById('seatSelect');
+        for (let i = 1; i <= 20; i++) {
+            const opt = document.createElement('option');
+            opt.value = `${i} 號`;
+            opt.textContent = `${i} 號`;
+            seatSelect.appendChild(opt);
+        }
+    }
+
     function getBaseImage(src) {
         if (!baseImgCache[src]) {
             const img = new Image();
-            img.onload = () => render();
             img.src = src;
+            img.onload = () => render();
             baseImgCache[src] = img;
         }
         return baseImgCache[src];
     }
-    function ensureBases(srcs) {
-        return Promise.all([...new Set(srcs)].map(src => new Promise(res => {
-            const img = getBaseImage(src);
-            if (img.complete && img.naturalWidth) return res();
-            img.addEventListener('load', () => res(), { once: true });
-            img.addEventListener('error', () => res(), { once: true });
-        })));
-    }
-
-    // ---------- 資料 ----------
-    function createNewStudentObj(from) {
-        const s = {
-            id: Date.now() + Math.random(),
-            bgSrc: '1000073981.png',
-            classText: '', nameText: '', seatText: '',
-            userImg: null, userImgBase64: '',
-            scale: 1, xOffset: 0, yOffset: 0
-        };
-        if (from) { s.bgSrc = from.bgSrc; s.classText = from.classText; }
-        return s;
-    }
-    const isBlank = s => !s.nameText.trim() && !s.userImg;
-
-    function initSeatOptions() {
-        const sel = $('seatSelect');
-        for (let i = 1; i <= SEAT_MAX; i++) {
-            const opt = document.createElement('option');
-            opt.value = `${i} 號`; opt.textContent = `${i} 號`;
-            sel.appendChild(opt);
-        }
-    }
-
-    let saveTimer = null;
-    function saveToStorage() {
-        const data = students.map(s => { const c = { ...s }; delete c.userImg; return c; });
-        try { localStorage.setItem('kindergartenCards', JSON.stringify(data)); }
-        catch (e) { console.warn('暫存空間可能已滿'); }
-        updateTabUI();
-    }
-    function saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(saveToStorage, 250); }
 
     function init() {
         initSeatOptions();
-        const saved = localStorage.getItem('kindergartenCards');
-        if (saved) {
+
+        const savedData = localStorage.getItem('kindergartenCards');
+        if (savedData) {
             try {
-                students = JSON.parse(saved);
+                students = JSON.parse(savedData);
                 students.forEach(s => {
-                    s.scale = Math.max(1, s.scale || 1);   // 舊版可縮小到 <1 會露白邊，統一改為最小 1
                     if (s.userImgBase64) {
                         const img = new Image();
                         img.onload = () => render();
@@ -285,388 +246,309 @@
                         s.userImg = img;
                     }
                 });
-            } catch (e) { console.error('讀取暫存失敗', e); students = []; }
+            } catch (e) { console.error("讀取暫存失敗", e); students = []; }
         }
-        if (!students.length) for (let i = 0; i < PER_PAGE; i++) students.push(createNewStudentObj());
+
+        if (students.length === 0) {
+            for(let i=0; i<6; i++) addNewStudent();
+        }
         buildTabs();
         switchStudent(0);
     }
 
-    // ---------- 頁籤 / 切換 ----------
-    function tabLabel(s, idx) {
-        const name = s.nameText.replace(/\s+/g, '');
-        const done = name !== '' && s.userImg !== null;
-        return `${idx + 1}${name ? ' ' + name : ''}${done ? ' ✅' : ''}`;
+    function saveToStorage() {
+        const dataToSave = students.map(s => {
+            const clone = {...s};
+            delete clone.userImg;
+            return clone;
+        });
+        try {
+            localStorage.setItem('kindergartenCards', JSON.stringify(dataToSave));
+            updateTabUI();
+        } catch (e) { console.warn("暫存空間可能已滿"); }
     }
+
+    function createNewStudentObj() {
+        return {
+            id: Date.now(),
+            bgSrc: '1000073981.png',
+            classText: '', nameText: '', seatText: '',
+            userImg: null, userImgBase64: '',
+            scale: 1, xOffset: 0, yOffset: 0
+        };
+    }
+
+    function addNewStudent() {
+        students.push(createNewStudentObj());
+        buildTabs();
+        saveToStorage();
+    }
+
     function buildTabs() {
-        const box = $('tabsContainer');
-        box.innerHTML = '';
+        const container = document.getElementById('tabsContainer');
+        container.innerHTML = '';
         students.forEach((s, idx) => {
+            const isCompleted = s.nameText.trim() !== '' && s.userImg !== null;
             const btn = document.createElement('button');
+            btn.className = `tab-btn ${idx === currentIdx ? 'active' : ''}`;
+            btn.innerText = `學生 ${idx + 1} ${isCompleted ? '✅' : ''}`;
             btn.addEventListener('click', () => switchStudent(idx));
-            box.appendChild(btn);
+            container.appendChild(btn);
         });
-        updateTabUI();
     }
+
     function updateTabUI() {
-        const btns = $('tabsContainer').children;
+        const btns = document.querySelectorAll('.tab-btn');
         students.forEach((s, idx) => {
-            const b = btns[idx]; if (!b) return;
-            b.textContent = tabLabel(s, idx);
-            b.className = 'tab-btn' + (idx === currentIdx ? ' active' : '') + (s.nameText.trim() && s.userImg ? ' done' : '');
+            const isCompleted = s.nameText.trim() !== '' && s.userImg !== null;
+            if (btns[idx]) {
+                btns[idx].innerText = `學生 ${idx + 1} ${isCompleted ? '✅' : ''}`;
+            }
         });
     }
-    function scrollTabIntoView() {
-        const wrap = $('tabsWrapper'), b = $('tabsContainer').children[currentIdx];
-        if (b) wrap.scrollLeft = b.offsetLeft - (wrap.clientWidth - b.offsetWidth) / 2;
-    }
-    function updateNav() {
-        const total = students.length;
-        $('prevBtn').disabled = currentIdx === 0;
-        $('prevBtn').style.opacity = currentIdx === 0 ? 0.4 : 1;
-        $('nextBtn').textContent = currentIdx === total - 1 ? '新增下一位 ＋' : '下一位 ▶';
-        const page = Math.floor(currentIdx / PER_PAGE) + 1, pages = Math.ceil(total / PER_PAGE);
-        $('navInfo').textContent = currentViewMode === 'a4' ? `A4 第 ${page}/${pages} 頁` : `${currentIdx + 1} / ${total}`;
-    }
-    function syncPhotoUI() {
-        const s = students[currentIdx];
-        $('pickPhotoBtn').textContent = s.userImg ? '📷 更換照片' : '📷 選擇照片';
-        $('scale').value = s.scale;
-        $('scale').disabled = !s.userImg;
-    }
+
     function switchStudent(idx) {
         currentIdx = idx;
-        const s = students[idx];
-        $('bgSelect').value = s.bgSrc;
-        $('classSelect').value = s.classText || '';
-        $('nameInput').value = s.nameText;
-        $('seatSelect').value = s.seatText || '';
-        $('photoInput').value = '';
-        syncPhotoUI();
-        updateTabUI(); updateNav(); scrollTabIntoView();
-        getBaseImage(s.bgSrc);
+        document.querySelectorAll('.tab-btn').forEach((b, i) => b.classList.toggle('active', i === idx));
+        
+        const s = students[currentIdx];
+        document.getElementById('bgSelectLabel').innerText = `🖼️ 【學生 ${idx + 1}】底圖`;
+        document.getElementById('bgSelect').value = s.bgSrc;
+        document.getElementById('classSelect').value = s.classText || '';
+        document.getElementById('nameInput').value = s.nameText;
+        document.getElementById('seatSelect').value = s.seatText || '';
+        document.getElementById('scale').value = s.scale;
+        document.getElementById('xOffset').value = s.xOffset;
+        document.getElementById('yOffset').value = s.yOffset;
+        document.getElementById('photoInput').value = '';
         render();
     }
 
-    function addNewStudent(inheritFrom) {
-        const s = createNewStudentObj(inheritFrom);
-        if (inheritFrom && inheritFrom.seatText) {
-            const n = parseInt(inheritFrom.seatText) + 1;
-            if (n <= SEAT_MAX) s.seatText = `${n} 號`;
-        }
-        students.push(s);
-        buildTabs(); saveToStorage();
-    }
-    function goNext() {
-        if (currentIdx === students.length - 1) { addNewStudent(students[currentIdx]); switchStudent(students.length - 1); return; }
-        const prev = students[currentIdx], nxt = students[currentIdx + 1];
-        if (isBlank(nxt)) {                         // 空白學生：自動帶入上一位的班級、底圖、下一個座號
-            if (!nxt.classText) nxt.classText = prev.classText;
-            nxt.bgSrc = prev.bgSrc;
-            if (!nxt.seatText && prev.seatText) {
-                const n = parseInt(prev.seatText) + 1;
-                if (n <= SEAT_MAX) nxt.seatText = `${n} 號`;
-            }
-            saveToStorage();
-        }
-        switchStudent(currentIdx + 1);
-    }
-
-    // ---------- 事件 ----------
-    $('addStudentBtn').addEventListener('click', () => { addNewStudent(students[currentIdx]); switchStudent(students.length - 1); });
-    $('prevBtn').addEventListener('click', () => { if (currentIdx > 0) switchStudent(currentIdx - 1); });
-    $('nextBtn').addEventListener('click', goNext);
-
-    $('removeStudentBtn').addEventListener('click', () => {
-        if (students.length <= 1) return alert('至少需保留一位學生！');
-        if (confirm(`確定要刪除「學生 ${currentIdx + 1}」的資料嗎？`)) {
+    // 綁定事件
+    document.getElementById('addStudentBtn').addEventListener('click', () => { addNewStudent(); switchStudent(students.length - 1); });
+    
+    document.getElementById('removeStudentBtn').addEventListener('click', () => {
+        if (students.length <= 1) return alert("至少需保留一位學生！");
+        if (confirm("確定要刪除這位學生的資料嗎？")) {
             students.splice(currentIdx, 1);
             currentIdx = Math.max(0, currentIdx - 1);
-            buildTabs(); saveToStorage(); switchStudent(currentIdx);
+            buildTabs();
+            switchStudent(currentIdx);
+            saveToStorage();
         }
     });
-    $('clearAllBtn').addEventListener('click', () => {
-        if (confirm('⚠️ 警告：這將會清除所有學生的名片資料與照片，且無法復原！確定要全部清除嗎？')) {
+
+    // 一鍵清除所有學生與暫存
+    document.getElementById('clearAllBtn').addEventListener('click', () => {
+        if (confirm("⚠️ 警告：這將會清除所有學生的名片資料與照片，且無法復原！確定要全部清除嗎？")) {
             localStorage.removeItem('kindergartenCards');
             students = [];
-            for (let i = 0; i < PER_PAGE; i++) students.push(createNewStudentObj());
-            currentIdx = 0; buildTabs(); saveToStorage(); switchStudent(0);
-            showToast('🧹 已成功清除所有資料！');
+            for(let i=0; i<6; i++) addNewStudent();
+            buildTabs();
+            switchStudent(0);
+            showToast("🧹 已成功清除所有資料！");
         }
     });
 
-    $('bgSelect').addEventListener('change', e => { students[currentIdx].bgSrc = e.target.value; getBaseImage(e.target.value); saveToStorage(); render(); });
-    $('classSelect').addEventListener('change', function () { students[currentIdx].classText = this.value; saveToStorage(); render(); });
-    $('seatSelect').addEventListener('change', function () { students[currentIdx].seatText = this.value; saveToStorage(); render(); });
-    $('applyClassBtn').addEventListener('click', () => {
-        const v = students[currentIdx].classText;
-        if (!v) return showToast('請先選擇班級');
-        students.forEach(s => s.classText = v); saveToStorage(); render(); showToast(`已將全部學生設為「${v}」`);
-    });
-    $('applyBgBtn').addEventListener('click', () => {
-        const v = students[currentIdx].bgSrc;
-        students.forEach(s => s.bgSrc = v); saveToStorage(); render(); showToast('已將全部學生套用此底圖');
+    document.getElementById('resetPhotoBtn').addEventListener('click', () => {
+        students[currentIdx].scale = 1;
+        students[currentIdx].xOffset = 0;
+        students[currentIdx].yOffset = 0;
+        document.getElementById('scale').value = 1;
+        document.getElementById('xOffset').value = 0;
+        document.getElementById('yOffset').value = 0;
+        render();
+        saveToStorage();
     });
 
-    // 姓名：自動加空格；輸入法組字中不處理，避免注音/拼音被打斷
-    let composing = false;
-    const formatName = v => Array.from(v.replace(/\s+/g, '')).join(' ');
-    function onNameChange() {
-        const el = $('nameInput'), val = formatName(el.value);
-        if (el.value !== val) el.value = val;
-        students[currentIdx].nameText = el.value;
-        saveToStorage(); render();
-    }
-    $('nameInput').addEventListener('compositionstart', () => composing = true);
-    $('nameInput').addEventListener('compositionend', () => { composing = false; onNameChange(); });
-    $('nameInput').addEventListener('input', () => { if (!composing) onNameChange(); });
-    $('nameInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); e.target.blur(); } });
+    document.getElementById('bgSelect').addEventListener('change', (e) => {
+        students[currentIdx].bgSrc = e.target.value;
+        getBaseImage(e.target.value);
+        saveToStorage();
+        render();
+    });
 
-    // ---------- 照片 ----------
-    $('pickPhotoBtn').addEventListener('click', () => $('photoInput').click());
-    $('resetPhotoBtn').addEventListener('click', () => {
-        const s = students[currentIdx]; s.scale = 1; s.xOffset = 0; s.yOffset = 0;
-        syncPhotoUI(); saveToStorage(); render();
+    document.getElementById('classSelect').addEventListener('change', function() {
+        students[currentIdx].classText = this.value;
+        saveToStorage();
+        render();
     });
-    $('scale').addEventListener('input', function () {
-        const s = students[currentIdx]; s.scale = parseFloat(this.value);
-        reclamp(s); saveSoon(); render();
+
+    document.getElementById('seatSelect').addEventListener('change', function() {
+        students[currentIdx].seatText = this.value;
+        saveToStorage();
+        render();
     });
-    $('photoInput').addEventListener('change', function (e) {
+
+    document.getElementById('nameInput').addEventListener('input', function() {
+        let val = this.value.replace(/\s+/g, '').split('').join(' ');
+        if (this.value !== val) this.value = val;
+        students[currentIdx].nameText = this.value;
+        saveToStorage();
+        render();
+    });
+
+    ['scale', 'xOffset', 'yOffset'].forEach(id => {
+        document.getElementById(id).addEventListener('input', function() {
+            students[currentIdx][id] = parseFloat(this.value);
+            saveToStorage();
+            render();
+        });
+    });
+
+    document.getElementById('photoInput').addEventListener('change', function(e) {
         const file = e.target.files[0];
         if (!file) return;
-        const target = students[currentIdx];
         const reader = new FileReader();
-        reader.onload = ev => {
+        reader.onload = function(event) {
             const img = new Image();
             img.onload = () => {
-                const MAX = 1000, r = Math.min(1, MAX / Math.max(img.width, img.height));
-                const w = Math.round(img.width * r), h = Math.round(img.height * r);
-                const off = document.createElement('canvas'); off.width = w; off.height = h;
-                const octx = off.getContext('2d');
-                octx.fillStyle = '#ffffff'; octx.fillRect(0, 0, w, h);   // 透明 PNG 墊白底，避免轉 JPEG 變黑
-                octx.drawImage(img, 0, 0, w, h);
-                const b64 = off.toDataURL('image/jpeg', 0.85);
-                const cimg = new Image();
-                cimg.onload = () => {
-                    target.userImgBase64 = b64; target.userImg = cimg;
-                    target.scale = 1; target.xOffset = 0; target.yOffset = 0;
-                    if (students[currentIdx] === target) syncPhotoUI();
-                    saveToStorage(); render();
+                const offCanvas = document.createElement('canvas');
+                const MAX_WIDTH = 800;
+                let width = img.width;
+                let height = img.height;
+                if (width > MAX_WIDTH) {
+                    height = Math.round(height *= MAX_WIDTH / width);
+                    width = MAX_WIDTH;
+                }
+                offCanvas.width = width; offCanvas.height = height;
+                const offCtx = offCanvas.getContext('2d');
+                offCtx.drawImage(img, 0, 0, width, height);
+                
+                const compressedBase64 = offCanvas.toDataURL('image/jpeg', 0.8);
+                students[currentIdx].userImgBase64 = compressedBase64;
+                
+                const compressedImg = new Image();
+                compressedImg.onload = () => {
+                    students[currentIdx].userImg = compressedImg;
+                    saveToStorage();
+                    render();
                 };
-                cimg.src = b64;
+                compressedImg.src = compressedBase64;
             };
-            img.src = ev.target.result;
+            img.src = event.target.result;
         };
         reader.readAsDataURL(file);
     });
 
-    // ---------- 相框與照片幾何 ----------
-    function getFrame(bgSrc, w, h) {
-        const f = FRAMES[bgSrc] || DEFAULT_FRAME;
-        return { x: f[0] * w, y: f[1] * h, w: (f[2] - f[0]) * w, h: (f[3] - f[1]) * h, r: w * 0.028, bleed: w * 0.004 };
-    }
-    // 照片以「填滿相框（含 bleed 出血）」為基準，縮放最小為 1、位移限制在不露底的範圍
-    function photoMetrics(s, w, h) {
-        const f = getFrame(s.bgSrc, w, h), bl = f.bleed;
-        const ex = f.x - bl, ey = f.y - bl, ew = f.w + 2 * bl, eh = f.h + 2 * bl;
-        const iw = s.userImg.width, ih = s.userImg.height;
-        const base = Math.max(ew / iw, eh / ih);
-        const sc = clamp(s.scale || 1, 1, 4);
-        const dw = iw * base * sc, dh = ih * base * sc;
-        const maxX = Math.max(0, (dw - ew) / 2), maxY = Math.max(0, (dh - eh) / 2);
-        return { f, ex, ey, ew, eh, dw, dh, maxX, maxY,
-                 ox: clamp(s.xOffset || 0, -maxX, maxX), oy: clamp(s.yOffset || 0, -maxY, maxY) };
-    }
-    function reclamp(s) {
-        if (!s.userImg) return;
-        const b = getBaseImage(s.bgSrc), w = b.naturalWidth || 1366, h = b.naturalHeight || 784;
-        const m = photoMetrics(s, w, h); s.xOffset = m.ox; s.yOffset = m.oy;
+    function roundedRectPath(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y); ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius); ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height); ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius); ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y); ctx.closePath();
     }
 
-    function roundedRectPath(c, x, y, w, h, r) {
-        c.beginPath();
-        c.moveTo(x + r, y); c.lineTo(x + w - r, y); c.quadraticCurveTo(x + w, y, x + w, y + r);
-        c.lineTo(x + w, y + h - r); c.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        c.lineTo(x + r, y + h); c.quadraticCurveTo(x, y + h, x, y + h - r);
-        c.lineTo(x, y + r); c.quadraticCurveTo(x, y, x + r, y); c.closePath();
-    }
-    function fitText(c, text, x, y, maxW, size) {
-        const fam = '"Microsoft JhengHei","Noto Sans TC",sans-serif';
-        c.font = `bold ${size}px ${fam}`;
-        while (c.measureText(text).width > maxW && size > 20) { size -= 2; c.font = `bold ${size}px ${fam}`; }
-        c.fillText(text, x, y);
-    }
+    function drawCard(targetCtx, sData, w, h) {
+        const bImg = getBaseImage(sData.bgSrc);
+        if (bImg && bImg.complete) targetCtx.drawImage(bImg, 0, 0, w, h);
+        else { targetCtx.fillStyle = '#ffffff'; targetCtx.fillRect(0, 0, w, h); }
 
-    function drawCard(c, s, w, h, preview) {
-        const bImg = getBaseImage(s.bgSrc);
-        if (bImg && bImg.complete && bImg.naturalWidth) c.drawImage(bImg, 0, 0, w, h);
-        else { c.fillStyle = '#fff'; c.fillRect(0, 0, w, h); }
+        if (sData.userImg) {
+            targetCtx.save();
+            const frameX = w * 0.654, frameY = h * 0.125, frameW = w * 0.288, frameH = h * 0.555, frameRadius = w * 0.035;
+            roundedRectPath(targetCtx, frameX, frameY, frameW, frameH, frameRadius); targetCtx.clip();
 
-        const f = getFrame(s.bgSrc, w, h);
-        if (s.userImg) {
-            const m = photoMetrics(s, w, h);
-            c.save();
-            roundedRectPath(c, m.ex, m.ey, m.ew, m.eh, f.r + f.bleed); c.clip();
-            c.drawImage(s.userImg, m.ex + (m.ew - m.dw) / 2 + m.ox, m.ey + (m.eh - m.dh) / 2 + m.oy, m.dw, m.dh);
-            c.restore();
-        } else if (preview) {                       // 只在預覽顯示提示，匯出不會出現
-            c.save();
-            roundedRectPath(c, f.x, f.y, f.w, f.h, f.r); c.clip();
-            c.fillStyle = 'rgba(0,0,0,0.38)'; c.fillRect(f.x, f.y, f.w, f.h);
-            c.fillStyle = '#fff'; c.textAlign = 'center'; c.textBaseline = 'middle';
-            c.font = `bold ${h * 0.075}px "Microsoft JhengHei","Noto Sans TC",sans-serif`;
-            c.fillText('📷 點這裡', f.x + f.w / 2, f.y + f.h / 2 - h * 0.04);
-            c.fillText('選擇照片', f.x + f.w / 2, f.y + f.h / 2 + h * 0.045);
-            c.restore();
+            const imgAspect = sData.userImg.width / sData.userImg.height, frameAspect = frameW / frameH;
+            let drawW, drawH;
+            if (imgAspect > frameAspect) { drawH = frameH; drawW = sData.userImg.width * (frameH / sData.userImg.height); } 
+            else { drawW = frameW; drawH = sData.userImg.height * (frameW / sData.userImg.width); }
+
+            drawW *= sData.scale; drawH *= sData.scale;
+            const drawX = frameX + (frameW - drawW) / 2 + sData.xOffset;
+            const drawY = frameY + (frameH - drawH) / 2 + sData.yOffset;
+            targetCtx.drawImage(sData.userImg, drawX, drawY, drawW, drawH);
+            targetCtx.restore();
         }
-        c.fillStyle = '#222'; c.textAlign = 'left'; c.textBaseline = 'middle';
-        const tx = w * 0.33, maxW = w * 0.30, size = h * 0.095;
-        fitText(c, s.classText, tx, h * 0.45, maxW, size);
-        fitText(c, s.nameText, tx, h * 0.59, maxW, size);
-        fitText(c, s.seatText, tx, h * 0.73, maxW, size);
+        targetCtx.fillStyle = '#222222';
+        targetCtx.font = `bold ${h * 0.095}px "Microsoft JhengHei", sans-serif`;
+        targetCtx.textBaseline = 'middle';
+        const textX = w * 0.33;
+        targetCtx.fillText(sData.classText, textX, h * 0.45);
+        targetCtx.fillText(sData.nameText, textX, h * 0.59);
+        targetCtx.fillText(sData.seatText, textX, h * 0.73);
     }
 
-    function createCardCanvas(s) {
-        const c = document.createElement('canvas'), b = getBaseImage(s.bgSrc);
-        c.width = b.naturalWidth || 1000; c.height = b.naturalHeight || 600;
-        const cc = c.getContext('2d'); cc.imageSmoothingEnabled = true; cc.imageSmoothingQuality = 'high';
-        drawCard(cc, s, c.width, c.height, false); return c;
+    function createCardCanvas(sData) {
+        const c = document.createElement('canvas');
+        const bImg = getBaseImage(sData.bgSrc);
+        c.width = (bImg && bImg.width) ? bImg.width : 1000; c.height = (bImg && bImg.height) ? bImg.height : 600;
+        const cCtx = c.getContext('2d'); cCtx.imageSmoothingEnabled = true; cCtx.imageSmoothingQuality = 'high';
+        drawCard(cCtx, sData, c.width, c.height); return c;
     }
 
-    // ---------- 繪製（以 rAF 合併重繪） ----------
-    let rafId = 0;
-    function render() { if (!rafId) rafId = requestAnimationFrame(() => { rafId = 0; doRender(); }); }
-    function doRender() {
-        if (!students.length) return;
+    function render() {
         if (currentViewMode === 'single') {
-            const s = students[currentIdx], b = getBaseImage(s.bgSrc);
-            const w = b.naturalWidth || 1000, h = b.naturalHeight || 600;
-            if (canvas.width !== w) canvas.width = w;
-            if (canvas.height !== h) canvas.height = h;
-            ctx.imageSmoothingQuality = 'high';
-            drawCard(ctx, s, w, h, true);
+            const bImg = getBaseImage(students[currentIdx].bgSrc);
+            canvas.width = (bImg && bImg.width) ? bImg.width : 1000;
+            canvas.height = (bImg && bImg.height) ? bImg.height : 600;
+            drawCard(ctx, students[currentIdx], canvas.width, canvas.height);
         } else {
             canvas.width = 2480; canvas.height = 3508;
             renderA4(ctx, canvas.width, canvas.height);
         }
     }
-    function renderA4(c, W, H) {
-        c.fillStyle = '#fff'; c.fillRect(0, 0, W, H);
-        const cw = Math.round(W * 0.42), ch = Math.round(cw * 0.6), cols = 2, rows = 3;
-        const gx = (W - cols * cw) / (cols + 1), gy = (H - rows * ch) / (rows + 1);
-        const start = Math.floor(currentIdx / PER_PAGE) * PER_PAGE;
-        students.slice(start, start + PER_PAGE).forEach((s, i) => {
-            const x = gx + (i % cols) * (cw + gx), y = gy + Math.floor(i / cols) * (ch + gy);
-            c.drawImage(createCardCanvas(s), x, y, cw, ch);
-            c.strokeStyle = (start + i === currentIdx) ? '#ff8a65' : '#ccc';
-            c.lineWidth = (start + i === currentIdx) ? 6 : 2; c.strokeRect(x, y, cw, ch);
+
+    function renderA4(targetCtx, a4W, a4H) {
+        targetCtx.fillStyle = '#ffffff'; targetCtx.fillRect(0, 0, a4W, a4H);
+        const cardWidth = Math.round(a4W * 0.42), cardHeight = Math.round(cardWidth * 0.6);
+        const cols = 2, rows = 3;
+        const gapX = (a4W - (cols * cardWidth)) / (cols + 1), gapY = (a4H - (rows * cardHeight)) / (rows + 1);
+
+        students.forEach((sData, idx) => {
+            const r = Math.floor((idx % 6) / cols), c = (idx % 6) % cols;
+            if(idx < 6) {
+                const x = gapX + c * (cardWidth + gapX), y = gapY + r * (cardHeight + gapY);
+                const cardCanvas = createCardCanvas(sData);
+                targetCtx.drawImage(cardCanvas, x, y, cardWidth, cardHeight);
+                targetCtx.strokeStyle = '#cccccc'; targetCtx.lineWidth = 2; targetCtx.strokeRect(x, y, cardWidth, cardHeight);
+            }
         });
     }
 
-    function setView(mode) {
-        currentViewMode = mode;
-        document.body.classList.toggle('mode-single', mode === 'single');
-        document.body.classList.toggle('mode-a4', mode === 'a4');
-        $('viewSingleBtn').classList.toggle('active', mode === 'single');
-        $('viewA4Btn').classList.toggle('active', mode === 'a4');
-        updateNav(); render();
-    }
-    $('viewSingleBtn').addEventListener('click', () => setView('single'));
-    $('viewA4Btn').addEventListener('click', async () => { await ensureBases(students.map(s => s.bgSrc)); setView('a4'); });
+    document.getElementById('viewSingleBtn').addEventListener('click', function() { currentViewMode = 'single'; this.classList.add('active'); document.getElementById('viewA4Btn').classList.remove('active'); render(); });
+    document.getElementById('viewA4Btn').addEventListener('click', function() { currentViewMode = 'a4'; this.classList.add('active'); document.getElementById('viewSingleBtn').classList.remove('active'); render(); });
 
-    // ---------- 在預覽圖上直接拖曳 / 縮放照片 ----------
-    const pointers = new Map();
-    let drag = null;   // { startX, startY, ox, oy, m } 或 { pinch: true, dist, scale }
-    function canvasPoint(e) {
-        const r = canvas.getBoundingClientRect();
-        return { x: (e.clientX - r.left) * canvas.width / r.width, y: (e.clientY - r.top) * canvas.height / r.height };
-    }
-    function inFrame(p, s) { const f = getFrame(s.bgSrc, canvas.width, canvas.height); return p.x >= f.x && p.x <= f.x + f.w && p.y >= f.y && p.y <= f.y + f.h; }
-
-    canvas.addEventListener('pointerdown', e => {
-        if (currentViewMode !== 'single') return;
-        const s = students[currentIdx], p = canvasPoint(e);
-        if (!inFrame(p, s)) return;
-        canvas.setPointerCapture(e.pointerId);
-        pointers.set(e.pointerId, p);
-        if (!s.userImg) { drag = { tap: true, startX: p.x, startY: p.y }; return; }
-        const m = photoMetrics(s, canvas.width, canvas.height);
-        if (pointers.size === 2) {
-            const [a, b] = [...pointers.values()];
-            drag = { pinch: true, dist: Math.hypot(a.x - b.x, a.y - b.y) || 1, scale: s.scale };
-        } else drag = { startX: p.x, startY: p.y, ox: m.ox, oy: m.oy, maxX: m.maxX, maxY: m.maxY };
-    });
-    canvas.addEventListener('pointermove', e => {
-        if (!pointers.has(e.pointerId) || !drag || drag.tap) return;
-        const s = students[currentIdx], p = canvasPoint(e);
-        pointers.set(e.pointerId, p);
-        if (drag.pinch && pointers.size >= 2) {
-            const [a, b] = [...pointers.values()], d = Math.hypot(a.x - b.x, a.y - b.y) || 1;
-            s.scale = clamp(drag.scale * d / drag.dist, 1, 4); reclamp(s); syncPhotoUI();
-        } else if (!drag.pinch) {
-            s.xOffset = clamp(drag.ox + (p.x - drag.startX), -drag.maxX, drag.maxX);
-            s.yOffset = clamp(drag.oy + (p.y - drag.startY), -drag.maxY, drag.maxY);
-        }
-        saveSoon(); render();
-    });
-    function endPointer(e) {
-        if (!pointers.has(e.pointerId)) return;
-        const p = canvasPoint(e);
-        if (drag && drag.tap && Math.hypot(p.x - drag.startX, p.y - drag.startY) < canvas.width * 0.01) $('photoInput').click();
-        pointers.delete(e.pointerId);
-        if (pointers.size === 0) drag = null;
-        else if (drag && drag.pinch) {               // 雙指變單指：以剩下的手指繼續拖曳
-            const s = students[currentIdx], m = photoMetrics(s, canvas.width, canvas.height), [q] = [...pointers.values()];
-            drag = { startX: q.x, startY: q.y, ox: m.ox, oy: m.oy, maxX: m.maxX, maxY: m.maxY };
-        }
-    }
-    canvas.addEventListener('pointerup', endPointer);
-    canvas.addEventListener('pointercancel', endPointer);
-    canvas.addEventListener('wheel', e => {
-        const s = students[currentIdx];
-        if (currentViewMode !== 'single' || !s.userImg) return;
-        e.preventDefault();
-        s.scale = clamp(s.scale * (e.deltaY < 0 ? 1.06 : 0.94), 1, 4); reclamp(s); syncPhotoUI(); saveSoon(); render();
-    }, { passive: false });
-
-    // ---------- 提示 / 匯出 ----------
     function showToast(msg) {
-        const t = $('toastMsg');
-        t.innerHTML = msg; t.className = 'toast-msg toast-success'; t.style.display = 'block';
-        clearTimeout(showToast._t); showToast._t = setTimeout(() => t.style.display = 'none', 5000);
+        const toast = document.getElementById('toastMsg');
+        toast.innerHTML = msg; toast.className = 'toast-msg toast-success'; toast.style.display = 'block';
+        setTimeout(() => toast.style.display = 'none', 6000);
     }
 
-    $('downloadSingleBtn').addEventListener('click', async () => {
-        const s = students[currentIdx];
-        await ensureBases([s.bgSrc]);
-        const fileName = `${s.nameText.replace(/\s+/g, '') || `學生${currentIdx + 1}`}_名片.png`;
+    document.getElementById('downloadSingleBtn').addEventListener('click', () => {
+        const sData = students[currentIdx];
+        const fileName = `${sData.nameText.trim().replace(/\s+/g, '') || `學生${currentIdx+1}`}_名片.png`;
+        const singleCanvas = createCardCanvas(sData);
         const link = document.createElement('a');
-        link.download = fileName; link.href = createCardCanvas(s).toDataURL('image/png');
+        link.download = fileName; link.href = singleCanvas.toDataURL('image/png');
         document.body.appendChild(link); link.click(); document.body.removeChild(link);
         showToast(`🎉 成功下載：${fileName}`);
     });
 
-    $('downloadA4PdfBtn').addEventListener('click', async () => {
-        if (!window.jspdf) return showToast('PDF 元件尚未載入，請確認網路後再試一次');
-        const btn = $('downloadA4PdfBtn'); btn.disabled = true; btn.textContent = '⏳ 產生中…';
-        try {
-            await ensureBases(students.map(s => s.bgSrc));
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
-            const cardW = 90, cardH = 54, gapX = (210 - 2 * cardW) / 3, gapY = (297 - 3 * cardH) / 4;
-            let n = 0;
-            for (const s of students) {
-                if (n === PER_PAGE) { doc.addPage(); n = 0; }
-                const x = gapX + (n % 2) * (cardW + gapX), y = gapY + Math.floor(n / 2) * (cardH + gapY);
-                doc.addImage(createCardCanvas(s).toDataURL('image/jpeg', 0.95), 'JPEG', x, y, cardW, cardH);
-                doc.setDrawColor(200, 200, 200); doc.rect(x, y, cardW, cardH);
-                n++;
-                await new Promise(r => setTimeout(r, 0));   // 讓出執行緒，避免畫面卡住
-            }
-            doc.save('幼兒園名片_列印檔.pdf');
-            showToast('🎉 成功下載 PDF！可直接列印');
-        } finally { btn.disabled = false; btn.textContent = '📄 輸出 A4 列印檔 (PDF)'; }
+    document.getElementById('downloadA4PdfBtn').addEventListener('click', () => {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+        
+        const a4W = 210, a4H = 297;
+        const cardW = 90, cardH = 54;
+        const gapX = (a4W - (2 * cardW)) / 3, gapY = (a4H - (3 * cardH)) / 4;
+
+        let itemsOnPage = 0;
+        students.forEach((sData, idx) => {
+            if (itemsOnPage === 6) { doc.addPage(); itemsOnPage = 0; }
+            const r = Math.floor(itemsOnPage / 2), c = itemsOnPage % 2;
+            const x = gapX + c * (cardW + gapX), y = gapY + r * (cardH + gapY);
+            
+            const cardCanvas = createCardCanvas(sData);
+            const imgData = cardCanvas.toDataURL('image/jpeg', 1.0);
+            doc.addImage(imgData, 'JPEG', x, y, cardW, cardH);
+            doc.setDrawColor(200, 200, 200); doc.rect(x, y, cardW, cardH);
+            itemsOnPage++;
+        });
+
+        doc.save('幼兒園名片_列印檔.pdf');
+        showToast(`🎉 成功下載 PDF！可直接列印`);
     });
 
     // ==================== PWA：註冊 Service Worker 與安裝提示 ====================
